@@ -1,0 +1,497 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Hertzian Explorer: Media</title>
+	<link rel="stylesheet" type="text/css" href="styleDefaultB.css" />
+	
+<script language="JavaScript" type="text/javascript">
+<!--
+//v1.7
+// Flash Player Version Detection
+// Detect Client Browser type
+// Copyright 2005-2008 Adobe Systems Incorporated.  All rights reserved.
+var isIE  = (navigator.appVersion.indexOf("MSIE") != -1) ? true : false;
+var isWin = (navigator.appVersion.toLowerCase().indexOf("win") != -1) ? true : false;
+var isOpera = (navigator.userAgent.indexOf("Opera") != -1) ? true : false;
+function ControlVersion()
+{
+	var version;
+	var axo;
+	var e;
+	// NOTE : new ActiveXObject(strFoo) throws an exception if strFoo isn't in the registry
+	try {
+		// version will be set for 7.X or greater players
+		axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
+		version = axo.GetVariable("$version");
+	} catch (e) {
+	}
+	if (!version)
+	{
+		try {
+			// version will be set for 6.X players only
+			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
+			
+			// installed player is some revision of 6.0
+			// GetVariable("$version") crashes for versions 6.0.22 through 6.0.29,
+			// so we have to be careful. 
+			
+			// default to the first public version
+			version = "WIN 6,0,21,0";
+			// throws if AllowScripAccess does not exist (introduced in 6.0r47)		
+			axo.AllowScriptAccess = "always";
+			// safe to call for 6.0r47 or greater
+			version = axo.GetVariable("$version");
+		} catch (e) {
+		}
+	}
+	if (!version)
+	{
+		try {
+			// version will be set for 4.X or 5.X player
+			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
+			version = axo.GetVariable("$version");
+		} catch (e) {
+		}
+	}
+	if (!version)
+	{
+		try {
+			// version will be set for 3.X player
+			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
+			version = "WIN 3,0,18,0";
+		} catch (e) {
+		}
+	}
+	if (!version)
+	{
+		try {
+			// version will be set for 2.X player
+			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
+			version = "WIN 2,0,0,11";
+		} catch (e) {
+			version = -1;
+		}
+	}
+	
+	return version;
+}
+// JavaScript helper required to detect Flash Player PlugIn version information
+function GetSwfVer(){
+	// NS/Opera version >= 3 check for Flash plugin in plugin array
+	var flashVer = -1;
+	
+	if (navigator.plugins != null && navigator.plugins.length > 0) {
+		if (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]) {
+			var swVer2 = navigator.plugins["Shockwave Flash 2.0"] ? " 2.0" : "";
+			var flashDescription = navigator.plugins["Shockwave Flash" + swVer2].description;
+			var descArray = flashDescription.split(" ");
+			var tempArrayMajor = descArray[2].split(".");			
+			var versionMajor = tempArrayMajor[0];
+			var versionMinor = tempArrayMajor[1];
+			var versionRevision = descArray[3];
+			if (versionRevision == "") {
+				versionRevision = descArray[4];
+			}
+			if (versionRevision[0] == "d") {
+				versionRevision = versionRevision.substring(1);
+			} else if (versionRevision[0] == "r") {
+				versionRevision = versionRevision.substring(1);
+				if (versionRevision.indexOf("d") > 0) {
+					versionRevision = versionRevision.substring(0, versionRevision.indexOf("d"));
+				}
+			}
+			var flashVer = versionMajor + "." + versionMinor + "." + versionRevision;
+		}
+	}
+	// MSN/WebTV 2.6 supports Flash 4
+	else if (navigator.userAgent.toLowerCase().indexOf("webtv/2.6") != -1) flashVer = 4;
+	// WebTV 2.5 supports Flash 3
+	else if (navigator.userAgent.toLowerCase().indexOf("webtv/2.5") != -1) flashVer = 3;
+	// older WebTV supports Flash 2
+	else if (navigator.userAgent.toLowerCase().indexOf("webtv") != -1) flashVer = 2;
+	else if ( isIE && isWin && !isOpera ) {
+		flashVer = ControlVersion();
+	}	
+	return flashVer;
+}
+// When called with reqMajorVer, reqMinorVer, reqRevision returns true if that version or greater is available
+function DetectFlashVer(reqMajorVer, reqMinorVer, reqRevision)
+{
+	versionStr = GetSwfVer();
+	if (versionStr == -1 ) {
+		return false;
+	} else if (versionStr != 0) {
+		if(isIE && isWin && !isOpera) {
+			// Given "WIN 2,0,0,11"
+			tempArray         = versionStr.split(" "); 	// ["WIN", "2,0,0,11"]
+			tempString        = tempArray[1];			// "2,0,0,11"
+			versionArray      = tempString.split(",");	// ['2', '0', '0', '11']
+		} else {
+			versionArray      = versionStr.split(".");
+		}
+		var versionMajor      = versionArray[0];
+		var versionMinor      = versionArray[1];
+		var versionRevision   = versionArray[2];
+        	// is the major.revision >= requested major.revision AND the minor version >= requested minor
+		if (versionMajor > parseFloat(reqMajorVer)) {
+			return true;
+		} else if (versionMajor == parseFloat(reqMajorVer)) {
+			if (versionMinor > parseFloat(reqMinorVer))
+				return true;
+			else if (versionMinor == parseFloat(reqMinorVer)) {
+				if (versionRevision >= parseFloat(reqRevision))
+					return true;
+			}
+		}
+		return false;
+	}
+}
+function AC_AddExtension(src, ext)
+{
+  if (src.indexOf('?') != -1)
+    return src.replace(/\?/, ext+'?'); 
+  else
+    return src + ext;
+}
+function AC_Generateobj(objAttrs, params, embedAttrs) 
+{ 
+  var str = '';
+  if (isIE && isWin && !isOpera)
+  {
+    str += '<object ';
+    for (var i in objAttrs)
+    {
+      str += i + '="' + objAttrs[i] + '" ';
+    }
+    str += '>';
+    for (var i in params)
+    {
+      str += '<param name="' + i + '" value="' + params[i] + '" /> ';
+    }
+    str += '</object>';
+  }
+  else
+  {
+    str += '<embed ';
+    for (var i in embedAttrs)
+    {
+      str += i + '="' + embedAttrs[i] + '" ';
+    }
+    str += '> </embed>';
+  }
+  document.write(str);
+}
+function AC_FL_RunContent(){
+  var ret = 
+    AC_GetArgs
+    (  arguments, ".swf", "movie", "clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+     , "application/x-shockwave-flash"
+    );
+  AC_Generateobj(ret.objAttrs, ret.params, ret.embedAttrs);
+}
+function AC_SW_RunContent(){
+  var ret = 
+    AC_GetArgs
+    (  arguments, ".dcr", "src", "clsid:166B1BCA-3F9C-11CF-8075-444553540000"
+     , null
+    );
+  AC_Generateobj(ret.objAttrs, ret.params, ret.embedAttrs);
+}
+function AC_GetArgs(args, ext, srcParamName, classid, mimeType){
+  var ret = new Object();
+  ret.embedAttrs = new Object();
+  ret.params = new Object();
+  ret.objAttrs = new Object();
+  for (var i=0; i < args.length; i=i+2){
+    var currArg = args[i].toLowerCase();    
+    switch (currArg){	
+      case "classid":
+        break;
+      case "pluginspage":
+        ret.embedAttrs[args[i]] = args[i+1];
+        break;
+      case "src":
+      case "movie":	
+        args[i+1] = AC_AddExtension(args[i+1], ext);
+        ret.embedAttrs["src"] = args[i+1];
+        ret.params[srcParamName] = args[i+1];
+        break;
+      case "onafterupdate":
+      case "onbeforeupdate":
+      case "onblur":
+      case "oncellchange":
+      case "onclick":
+      case "ondblclick":
+      case "ondrag":
+      case "ondragend":
+      case "ondragenter":
+      case "ondragleave":
+      case "ondragover":
+      case "ondrop":
+      case "onfinish":
+      case "onfocus":
+      case "onhelp":
+      case "onmousedown":
+      case "onmouseup":
+      case "onmouseover":
+      case "onmousemove":
+      case "onmouseout":
+      case "onkeypress":
+      case "onkeydown":
+      case "onkeyup":
+      case "onload":
+      case "onlosecapture":
+      case "onpropertychange":
+      case "onreadystatechange":
+      case "onrowsdelete":
+      case "onrowenter":
+      case "onrowexit":
+      case "onrowsinserted":
+      case "onstart":
+      case "onscroll":
+      case "onbeforeeditfocus":
+      case "onactivate":
+      case "onbeforedeactivate":
+      case "ondeactivate":
+      case "type":
+      case "codebase":
+      case "id":
+        ret.objAttrs[args[i]] = args[i+1];
+        break;
+      case "width":
+      case "height":
+      case "align":
+      case "vspace": 
+      case "hspace":
+      case "class":
+      case "title":
+      case "accesskey":
+      case "name":
+      case "tabindex":
+        ret.embedAttrs[args[i]] = ret.objAttrs[args[i]] = args[i+1];
+        break;
+      default:
+        ret.embedAttrs[args[i]] = ret.params[args[i]] = args[i+1];
+    }
+  }
+  ret.objAttrs["classid"] = classid;
+  if (mimeType) ret.embedAttrs["type"] = mimeType;
+  return ret;
+}
+// -->
+</script>
+</head>
+
+<body>
+
+<div id="bg_00"> </div>
+
+<!--<div id="screenshot"> <img src="about_bg.jpg" align="left" width="100%" /> </div>
+-->
+    
+<div id="title_10"> 
+  <p id="title">Hertzian Explorer</p>
+</div>
+    
+<div id="links_20"> 
+  <p id="links"><a href="index.html" target="_self">home</a><br />
+ 	<a href="concept.html" target="_self">concept</a><br />
+	<a href="data.html" target="_self">tech</a><br />
+       <span class="purple">media</span><br />
+	<a href="contact.html" target="_self">contact</a></p>
+</div>
+
+<div id="download"> 
+  <!--<p id="download2"><a href="">download the project</a></p>
+  -->
+</div>
+<!--
+<div id="vis_21"> 
+  <table cellspacing="10px" >
+    <tr> 
+      <td><a id="ss01" href="links/screenshot_01.jpg" target="_blank"></a></td>
+      <td><a id="ss02" href="links/screenshot_02.jpg" target="_blank"></a></td>
+      <td><a id="ss03" href="links/screenshot_03.jpg" target="_blank"></a></td>
+    </tr>
+  </table>
+</div>
+
+<div id="vis_22"> 
+  <p id="screenshots">screenshots</p>
+</div>
+-->
+
+<!--
+<div id="screenshot_vis"> <img src="screenshot02.gif" align="right" width="100%" /> 
+</div>
+-->
+
+<!--
+<div id="main_vidTitle"> 
+  <p class="text"><span class="titles">Videos</span>
+  </p>
+  </div>
+ 	-->
+  
+<div id="main_tech">
+<p class="text">
+<span class="titles">Media/Press
+</span>
+</p>
+</div>
+<div id="main_vidDetail">
+<p class="vidText">
+Video
+</p>
+<br />
+<br />
+
+<p id="video">
+
+<!--url's used in the movie-->
+<!--text used in the movie-->
+<!-- saved from url=(0013)about:internet -->
+<script language="JavaScript" type="text/javascript">
+	AC_FL_RunContent(
+		'codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0',
+		'width', '548',
+		'height', '405',
+		'src', 'hertzianFLA',
+		'quality', 'high',
+		'pluginspage', 'http://www.adobe.com/go/getflashplayer',
+		'align', 'middle',
+		'play', 'true',
+		'loop', 'true',
+		'scale', 'exactfit',
+		'wmode', 'window',
+		'devicefont', 'false',
+		'id', 'hertzianFLA',
+		'bgcolor', '#151515',
+		'name', 'hertzianFLA',
+		'menu', 'true',
+		'allowFullScreen', 'true',
+		'allowScriptAccess','sameDomain',
+		'movie', 'video/hertzianFLA',
+		'salign', ''
+		); //end AC code
+</script>
+<noscript>
+	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="548" height="405" id="hertzianFLA" align="middle">
+	<param name="allowScriptAccess" value="sameDomain" />
+	<param name="allowFullScreen" value="true" />
+	<param name="movie" value="video/hertzianFLA.swf" /><param name="quality" value="high" /><param name="scale" value="exactfit" /><param name="bgcolor" value="#151515" />	<embed src="video/hertzianFLA.swf" quality="high" scale="exactfit" bgcolor="#151515" width="548" height="405" name="hertzianFLA" align="middle" allowScriptAccess="sameDomain" allowFullScreen="true" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer" /></embed>
+	</object>
+</noscript>
+</p>
+</div>
+
+
+<div id="main_mediaDetail">
+<p class="text">
+<span class="subtitle">Links & Press:</span>
+<br />
+<a href="http://vimeo.com/5300318" target="_blank">Vimeo overview video</a>
+<br />
+<a href="http://blog.makezine.com/archive/2009/07/next_dorkbot_socal_july_11th.html" target="_blank">
+Make Magazine Announcement</a>
+<br />
+<a href="http://www.signonsandiego.com/news/2009/jun/21/1a21ucsd175812-campus-culture/" target="_blank">
+San Diego Union-Tribune article (whoops, they spelled my last name wrong, should be Li not Lee) </a>
+
+
+</a>
+
+<br />
+<br />
+
+<!--Dorkbot Picture-->
+
+<img src="links/dorkbotDemo.jpg" border="0" alt="dorkbot socal 37">
+<br />
+<a href="http://dorkbot.org/dorkbotsocal/dorkbotsocal-past.html" target="_blank">
+Me demoing face warping visualization at Dorkbot SoCal (Event 37)
+<br />Photograph by Thomas Edwards.
+</a>
+
+
+
+
+
+
+<br />
+<br />
+<b><span class="subtitle">Immersive Wall Projection Visuals</span></b><br />
+<a href="links/diagramfBig.jpg" target="_blank"><b>
+(See Installation Diagram)</b>
+</a>
+<br />
+<br />
+<img src="links/face.jpg" border="0" alt="Face Distortion">
+<br />
+<b color="ffccff">Projection 1: (Face Distortion Video Feed)</b><br/>
+<br />
+Real time distortion of the participant's face via infrared camera, face detection and
+motion detection. <br />
+The more intense the radiation, the more distorted and chaotic the video feed. 
+When radiation passes a threshold, the viewer's face is rendered with a skull image, 
+denoting potentially hazardous levels of radio frequency radiation exposure.
+These visuals are projected on the front wall.
+<br />
+<br />
+<br />
+<img src="links/cA1.jpg" border="0" alt="conway setup">
+<br />
+<b color="ffccff">Projection 2: (On Floor)</b><br/>
+<br />
+Generative cellular automata simulation based on Conway's Game of Life that reacts 
+to <br />electromagnetic radiation. Rule sets change based on the magnitude of 
+EM fields, creating <br />different environments and cell behavior. This is projected 
+on the installation floor space to create an slowly changing ambient environment. 
+
+<br />
+<br />
+<br />
+<!--</p>-->
+<!--</div>-->
+<!--<div id="main_caImage">-->
+<img src="links/cA2.jpg" border="0" alt="floor setup">
+<!--</div>-->
+<!--<div id="main_vidDetail2">-->
+<!--<p class="text">-->
+<b color="ffccff">Projection 3: (On Side Wall)</b><br />
+<br />
+    Visuals of hertzian space disturbances and "hotspots" projected on the installation 
+    side wall. Changes in electromagnetic field intensity are reflected through 
+    the emergence of globular hotspots that quickly spread and influence the color 
+    and shape of nearby zones, creating a constantly changing colorscape. Like 
+    a radarscope, the visualization updates itself in a circular fashion with 
+    new hotspots emerging around a spinning sweep indicator (a randomly color 
+    changing "organism" comprised of a large ellipse with a trail of smaller ellipses). 
+    The speed and direction of the sweep changes based on radiation levels to 
+    reflect the dynamism of hertzian space. <br />
+    <br />
+    When there is no detected radiation, the indicator moves slowly in anticlockwise fashion.<br />
+    When the indicator starts to move clockwise it means that a burst of radiation 
+    has been detected. At this moment and from the position of the indicator, there 
+	is also an explosion of expanding transparent ellipses and a string of ellipses moving on a curved 
+    path. If there is constant radiation, the clockwise rotating indicator will 
+    continue to produces these explosive elements. As radiation levels increase, 
+    the sweep indicator will rotate faster, making the explosion of expanding 
+    ellipses appear further away from the indicator and towards the edge of the 
+    2D colorscape. The overall effect is a more agitated and dynamic visualization
+	of an active space.<br />
+<br />
+<br />
+<img src="links/cA3.jpg" border="0" alt="floor setup">
+<br />
+<br />
+<br />
+
+</p>
+</div>
+
+</body>
+</html>
